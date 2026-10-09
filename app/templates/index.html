@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}EduGenius AI — Know what to study next{% endblock %}
+{% block content %}
+<main>
+  <section class="landing-hero">
+    <div class="hero-content">
+      <p class="eyebrow"><span class="live-dot"></span> THE STUDY OS FOR ENGINEERING &amp; CS</p>
+      <h1>Know exactly what<br>to study <span>next.</span></h1>
+      <p class="hero-lede">A living map of your syllabus that connects what you study, what you know, and what deserves your time before exam day.</p>
+      <div class="hero-actions">
+        <a class="button button-lime" href="{{ url_for('auth.register') }}">Build your mastery map <span aria-hidden="true">→</span></a>
+        <a class="button button-ghost" href="#workflow">See how it works</a>
+      </div>
+      <p class="integrity-note"><span aria-hidden="true">✳</span> Learn the reasoning. Full solutions are a last rung, not the first response.</p>
+    </div>
+    <div class="map-preview" aria-label="Illustrative syllabus mastery map">
+      <div class="preview-top"><div><span class="preview-label">SEMESTER MAP · DEMO</span><h2>Engineering Mathematics III</h2></div><span class="demo-badge">ILLUSTRATIVE</span></div>
+      <div class="preview-unit"><span class="unit-index">UNIT 01</span><strong>Transforms &amp; Differential Equations</strong><span class="unit-chevron">⌄</span></div>
+      <div class="topic-row"><span class="mastery-dot dot-assessed"></span><span>Laplace transforms</span><strong class="mastery-number">68%</strong><span class="mastery-track"><i style="width:68%"></i></span></div>
+      <div class="topic-row topic-weak"><span class="mastery-dot dot-weak"></span><span>Inverse transforms</span><strong class="mastery-number">32%</strong><span class="mastery-track"><i style="width:32%"></i></span></div>
+      <div class="topic-row"><span class="mastery-dot dot-unassessed"></span><span>Convolution theorem</span><span class="not-assessed">Not assessed</span></div>
+      <div class="preview-insight"><span class="insight-icon">↗</span><span><b>Possible prerequisite gap</b><small>Review partial fractions before inverse transforms.</small></span></div>
+      <div class="preview-bottom"><span>Demo data · Not a real student record</span><span>Topic map <b>→</b></span></div>
+    </div>
+    <div class="hero-glow glow-one"></div><div class="hero-glow glow-two"></div>
+  </section>
+  <section class="proof-strip" aria-label="Product principles">
+    <div><strong>YOUR</strong><span>syllabus structure</span></div><div><strong>REAL</strong><span>quiz &amp; recall attempts</span></div><div><strong>NO</strong><span>invented progress stats</span></div><div><strong>WHY</strong><span>prerequisite-aware practice</span></div>
+  </section>
+  <section class="section section-tools" id="tools">
+    <div class="section-intro"><p class="eyebrow eyebrow-dark">ONE MAP. EVERY STUDY DECISION.</p><h2>Built around the way<br><span>engineering is learned.</span></h2><p>Courses split into units and topics. Attempts update mastery. Your weakest, highest-value topic becomes your next move.</p></div>
+    <div class="tools-grid">
+      <article class="tool-card"><span class="tool-icon">▦</span><small>01 · MAP</small><h3>Semester command center</h3><p>Build your branch, semester, courses, units, and topics. Unassessed topics stay unassessed—not falsely marked as zero.</p></article>
+      <article class="tool-card"><span class="tool-icon">↗</span><small>02 · DIAGNOSE</small><h3>Prerequisite detective</h3><p>Connect foundations to advanced topics. A low score can point you toward the earlier concept to revise first.</p></article>
+      <article class="tool-card"><span class="tool-icon">⌁</span><small>03 · PRACTICE</small><h3>Topic-level mastery</h3><p>Build a multiple-choice quiz for a syllabus topic. Answers remain hidden until submission; each attempt updates its mastery estimate.</p></article>
+      <article class="tool-card"><span class="tool-icon">◷</span><small>04 · PRIORITIZE</small><h3>Exam crunch planner</h3><p>Rank topics by your weightage, assessed mastery, and time before the exam. Adjust the suggested sessions to fit your week.</p></article>
+    </div>
+  </section>
+  <section class="section section-workflow" id="workflow">
+    <div class="workflow-heading"><p class="eyebrow">FROM SYLLABUS TO NEXT ACTION</p><h2>See the gap.<br><span>Work on the cause.</span></h2></div>
+    <div class="workflow-steps">
+      <article><span>01</span><div><h3>Enter a real syllabus</h3><p>Add your own topics manually or import a UTF-8 .txt/.md list formatted as Course | Unit | Topic.</p></div></article>
+      <article><span>02</span><div><h3>Test a specific concept</h3><p>Create a short quiz for the topic. Your score becomes a dated mastery event for that topic.</p></div></article>
+      <article><span>03</span><div><h3>Trace the prerequisite</h3><p>Link foundations like integration or data structures. Weak results surface foundations that may need review.</p></div></article>
+      <article><span>04</span><div><h3>Plan around the exam</h3><p>Set an exam date and study hours. Get ranked, adjustable review sessions with an exam-day buffer.</p></div></article>
+    </div>
+  </section>
+  <section class="closing-cta"><p class="eyebrow">START WITH YOUR SEMESTER</p><h2>Stop re-reading.<br><span>Find the actual gap.</span></h2><a class="button button-lime" href="{{ url_for('auth.register') }}">Create your study space <span aria-hidden="true">→</span></a><p>Demo syllabi are labeled and editable. Your own data stays in your account.</p></section>
+</main>
+{% endblock %}

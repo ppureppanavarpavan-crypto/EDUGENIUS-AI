@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}My syllabus · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page">
+  <section class="page-heading"><div><p class="eyebrow eyebrow-dark">MAKE YOUR MAP YOURS</p><h1>My syllabus</h1><p>Add courses by hand or import a plain-text syllabus. The imported structure remains editable.</p></div></section>
+  <div class="manage-grid">
+    <section class="panel"><p class="eyebrow eyebrow-dark">ADD A COURSE</p><h2>Set up a class</h2><form method="post" class="form-stack"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label>Course name<input name="name" maxlength="120" placeholder="e.g. Data Structures" required></label><div class="form-row"><label>Branch / program<input name="branch" maxlength="100" placeholder="Computer Science"></label><label>Semester<input name="semester" maxlength="30" placeholder="4"></label></div><button class="button button-lime" type="submit">Add course <span aria-hidden="true">→</span></button></form></section>
+    <section class="panel"><p class="eyebrow eyebrow-dark">IMPORT TEXT</p><h2>Bring in a syllabus list</h2><p class="muted-copy">UTF-8 .txt or .md. Use one line per topic:</p><code class="format-example">Course name | Unit name | Topic name</code><form action="{{ url_for('main.import_syllabus') }}" method="post" enctype="multipart/form-data" class="form-stack import-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label>Syllabus file<input type="file" name="syllabus" accept=".txt,.md,text/plain,text/markdown" required></label><button class="button button-outline" type="submit">Import syllabus</button></form><p class="field-help">Maximum 2 MB. Files are parsed as text only and never executed.</p></section>
+  </div>
+  <section class="panel course-list"><div class="panel-heading"><div><p class="eyebrow eyebrow-dark">YOUR COURSES</p><h2>Semester map</h2></div><span class="count-pill">{{ courses|length }} course{{ "" if courses|length == 1 else "s" }}</span></div>
+    {% if courses %}<div class="course-list-grid">{% for course in courses %}<a class="course-list-item" href="{{ url_for('main.course_detail', course_id=course.id) }}"><span class="course-list-icon">▦</span><span><strong>{{ course.name }}</strong><small>{{ course.branch or "Program not set" }}{% if course.semester %} · Semester {{ course.semester }}{% endif %} · {{ course.units|length }} unit{{ "" if course.units|length == 1 else "s" }}</small></span><b>→</b></a>{% endfor %}</div>{% else %}<div class="empty-inline"><p>No courses yet. Add one above or import your syllabus file.</p></div>{% endif %}
+  </section>
+</main>
+{% endblock %}

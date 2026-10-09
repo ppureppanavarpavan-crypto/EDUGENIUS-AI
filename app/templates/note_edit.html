@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Edit note · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page narrow-page">
+  <div class="breadcrumbs"><a href="{{ url_for('main.notes') }}">Notes</a><span>/</span><span>Edit</span></div>
+  <section class="panel"><p class="eyebrow eyebrow-dark">YOUR NOTEBOOK</p><h1>Edit note</h1><form method="post" class="form-stack">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Title<input name="title" maxlength="160" required value="{{ note.title }}"></label>
+    <label>Syllabus topic <span class="optional">(optional)</span><select name="topic_id"><option value="">Unlinked note</option>{% for topic in topics %}<option value="{{ topic.id }}" {% if note.topic_id == topic.id %}selected{% endif %}>{{ topic.unit.course.name }} · {{ topic.title }}</option>{% endfor %}</select></label>
+    <label>Note<textarea name="content" rows="12" maxlength="20000" required>{{ note.content }}</textarea></label>
+    <button class="button button-lime" type="submit">Save changes <span aria-hidden="true">→</span></button>
+  </form></section>
+</main>
+{% endblock %}

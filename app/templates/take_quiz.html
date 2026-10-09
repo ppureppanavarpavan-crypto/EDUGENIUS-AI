@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ quiz.title }} · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page narrow-page">
+  <div class="breadcrumbs"><a href="{{ url_for('main.course_detail', course_id=quiz.topic.unit.course_id) }}">{{ quiz.topic.unit.course.name }}</a><span>/</span><span>Topic quiz</span></div>
+  <section class="page-heading"><div><p class="eyebrow eyebrow-dark">PRACTICE · {{ quiz.questions|length }} QUESTIONS</p><h1>{{ quiz.topic.title }}</h1><p>Choose one answer per question. Correct answers and explanations are revealed only after submission.</p></div></section>
+  <form method="post" class="panel take-quiz"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% for question in quiz.questions %}<fieldset class="quiz-question"><legend><span class="question-count">QUESTION {{ "%02d"|format(loop.index) }}</span><strong>{{ question.prompt }}</strong></legend>{% for option in question.options %}<label class="answer-option"><input type="radio" name="answer_{{ question.id }}" value="{{ loop.index0 }}" required><span>{{ option }}</span></label>{% endfor %}</fieldset>{% endfor %}<button class="button button-lime button-submit" type="submit">Submit answers <span aria-hidden="true">→</span></button></form>
+  <p class="integrity-note"><span>✳</span> This is a learning check. Verify important concepts against your instructor’s materials.</p>
+</main>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Study tasks · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page">
+  <div class="breadcrumbs"><a href="{{ url_for('main.study_tools') }}">Study tools</a><span>/</span><span>Tasks</span></div>
+  <section class="page-heading"><div><p class="eyebrow eyebrow-dark">KEEP THE SEMESTER MOVING</p><h1>Study tasks</h1><p>Track upcoming assignments and the study work you want to finish.</p></div></section>
+  <div class="manage-grid">
+    <section class="panel"><p class="eyebrow eyebrow-dark">ADD A TASK</p><h2>What needs doing?</h2>
+      {% if courses %}<form method="post" class="form-stack"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label>Task title<input name="title" maxlength="160" required placeholder="e.g. Complete signals problem set"></label><label>Course<select name="course_id" required><option value="">Choose a course</option>{% for course in courses %}<option value="{{ course.id }}">{{ course.name }}</option>{% endfor %}</select></label><label>Due date <span class="optional">(optional)</span><input type="date" name="due_date"></label><label>Estimated minutes<input type="number" name="estimated_minutes" value="30" min="5" max="480" step="5" required></label><button class="button button-lime" type="submit">Add task <span aria-hidden="true">→</span></button></form>{% else %}<p class="muted-copy">Add a course before creating course tasks.</p><a class="button button-outline" href="{{ url_for('main.courses') }}">Set up a course</a>{% endif %}
+    </section>
+    <section class="panel"><div class="panel-heading"><div><p class="eyebrow eyebrow-dark">YOUR TASKS</p><h2>{{ tasks|length }} item{{ "" if tasks|length == 1 else "s" }}</h2></div></div>
+      {% if tasks %}<div class="record-list">{% for task in tasks %}<article class="record-card task-card {{ 'task-complete' if task.completed else '' }}"><div class="record-heading"><div><small>{{ task.course.name }} · {{ task.estimated_minutes }} min{% if task.due_date %} · due {{ task.due_date.strftime("%b %d, %Y") }}{% endif %}</small><strong>{{ task.title }}</strong></div><span class="count-pill">{{ "Done" if task.completed else "Open" }}</span></div><div class="task-actions"><form method="post" action="{{ url_for('main.toggle_task', task_id=task.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button button-outline button-small" type="submit">{{ "Reopen" if task.completed else "Mark complete" }}</button></form><form method="post" action="{{ url_for('main.delete_task', task_id=task.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="text-action danger-action" type="submit">Delete</button></form></div></article>{% endfor %}</div>{% else %}<p class="muted-copy">Your tasks will appear here.</p>{% endif %}
+    </section>
+  </div>
+</main>
+{% endblock %}

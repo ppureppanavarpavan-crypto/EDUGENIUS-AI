@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} · EduGenius AI{% endblock %}
+{% block content %}<main class="auth-page"><section class="auth-card"><p class="eyebrow eyebrow-dark">ERROR {{ code }}</p><h1>{{ message }}</h1><a class="button button-lime" href="{{ url_for('main.dashboard') if current_user.is_authenticated else url_for('main.index') }}">Go back <span aria-hidden="true">→</span></a></section></main>{% endblock %}

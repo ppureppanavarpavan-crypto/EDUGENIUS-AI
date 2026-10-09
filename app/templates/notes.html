@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Study notes · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page">
+  <div class="breadcrumbs"><a href="{{ url_for('main.study_tools') }}">Study tools</a><span>/</span><span>Notes</span></div>
+  <section class="page-heading"><div><p class="eyebrow eyebrow-dark">CAPTURE YOUR THINKING</p><h1>Study notes</h1><p>Keep your own explanations close to the topics they support.</p></div></section>
+  <div class="manage-grid">
+    <section class="panel"><p class="eyebrow eyebrow-dark">NEW NOTE</p><h2>Write it in your own words</h2><form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Title<input name="title" maxlength="160" required></label>
+      <label>Syllabus topic <span class="optional">(optional)</span><select name="topic_id"><option value="">Unlinked note</option>{% for topic in topics %}<option value="{{ topic.id }}">{{ topic.unit.course.name }} · {{ topic.title }}</option>{% endfor %}</select></label>
+      <label>Note<textarea name="content" rows="8" maxlength="20000" required></textarea></label>
+      <button class="button button-lime" type="submit">Save note <span aria-hidden="true">→</span></button>
+    </form></section>
+    <section class="panel"><div class="panel-heading"><div><p class="eyebrow eyebrow-dark">YOUR NOTEBOOK</p><h2>{{ notes|length }} saved note{{ "" if notes|length == 1 else "s" }}</h2></div></div>
+      {% if notes %}<div class="record-list">{% for note in notes %}<article class="record-card"><div class="record-heading"><div><h3>{{ note.title }}</h3><small>{{ note.topic.title if note.topic else "Not linked to a topic" }} · {{ note.created_at.strftime("%b %d, %Y") }}</small></div><a class="text-action" href="{{ url_for('main.edit_note', note_id=note.id) }}">Edit</a></div><p class="record-body">{{ note.content }}</p><form method="post" action="{{ url_for('main.delete_note', note_id=note.id) }}" onsubmit="return confirm('Delete this note?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="text-action danger-action" type="submit">Delete note</button></form></article>{% endfor %}</div>{% else %}<p class="muted-copy">Your saved notes will appear here.</p>{% endif %}
+    </section>
+  </div>
+</main>
+{% endblock %}

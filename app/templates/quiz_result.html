@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Quiz result · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page narrow-page">
+  <section class="result-hero"><p class="eyebrow">ATTEMPT RECORDED</p><div class="result-score">{{ (attempt.score * 100)|round|int }}<span>%</span></div><h1>{{ attempt.correct_count }} of {{ attempt.total_questions }} correct</h1><p>{{ quiz.topic.title }} · this score has updated your topic estimate.</p></section>
+  <section class="panel result-mastery"><div><p class="eyebrow eyebrow-dark">UPDATED TOPIC ESTIMATE</p><strong>{{ (mastery.score * 100)|round|int }}%</strong><p>{{ mastery.attempts }} recorded attempt{{ "" if mastery.attempts == 1 else "s" }} · {{ "Confidence: building" if mastery.attempts < 3 else "Confidence: more established" }}</p></div><a class="button button-outline" href="{{ url_for('main.topic_quiz', topic_id=quiz.topic_id) }}">Practice again</a></section>
+  {% if suggestions %}<section class="suggestion-card"><b>Prerequisite detective</b><p>Your result may point to a foundation worth checking: {% for topic in suggestions %}<strong>{{ topic.title }}</strong>{% if not loop.last %}, {% endif %}{% endfor %}. Review that material, then try this topic again.</p></section>{% endif %}
+  <section class="panel answer-review"><p class="eyebrow eyebrow-dark">REVIEW YOUR ANSWERS</p><h2>Use mistakes as a map</h2>{% for question in quiz.questions %}<article class="review-item"><p><span>QUESTION {{ loop.index }}</span><strong>{{ question.prompt }}</strong></p><p class="correct-answer">Correct answer: {{ question.options[question.correct_option] }}</p>{% if question.explanation %}<p>{{ question.explanation }}</p>{% endif %}</article>{% endfor %}</section>
+  <a class="text-action" href="{{ url_for('main.course_detail', course_id=quiz.topic.unit.course_id) }}">← Back to {{ quiz.topic.unit.course.name }}</a>
+</main>
+{% endblock %}

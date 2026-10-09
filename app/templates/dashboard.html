@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Semester command center · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page">
+  <section class="page-heading"><div><p class="eyebrow eyebrow-dark">YOUR ENGINEERING STUDY OS</p><h1>Semester command center</h1><p>Hi {{ current_user.name }}. Here’s your syllabus map, based only on activity you’ve recorded.</p></div><a class="button button-lime" href="{{ url_for('main.courses') }}">Manage syllabus <span aria-hidden="true">→</span></a></section>
+  {% if not course_topics %}
+  <section class="empty-card"><span class="empty-icon">▦</span><h2>Start with your syllabus</h2><p>Add a course, break it into units, then add topics. Your map will show “Not assessed” until you record real quiz attempts.</p><a class="button button-lime" href="{{ url_for('main.courses') }}">Add your first course</a></section>
+  {% else %}
+  {% set topic_total = namespace(value=0) %}{% for item in course_topics %}{% set topic_total.value = topic_total.value + (item.topics|length) %}{% endfor %}
+  <section class="stat-grid">
+    <article class="stat-card"><span>COURSES</span><strong>{{ course_topics|length }}</strong><small>In your semester map</small></article>
+    <article class="stat-card"><span>TOPICS ADDED</span><strong>{{ topic_total.value }}</strong><small>From your own syllabus</small></article>
+    <article class="stat-card"><span>RECENT ATTEMPTS</span><strong>{{ recent_events|length }}</strong><small>Most recent recorded events</small></article>
+    <article class="stat-card stat-accent"><span>UP NEXT</span><strong class="stat-next">Assess a topic</strong><small>Choose your next step</small></article>
+  </section>
+  <div class="dashboard-grid">
+    <section class="panel mastery-panel"><div class="panel-heading"><div><p class="eyebrow eyebrow-dark">COURSES → UNITS → TOPICS</p><h2>Your mastery map</h2></div><a href="{{ url_for('main.courses') }}">Edit syllabus ↗</a></div>
+      {% for item in course_topics %}
+      <article class="course-map-card"><div class="course-map-head"><div><h3>{{ item.course.name }}</h3><p>{{ item.course.branch or "Program not set" }}{% if item.course.semester %} · Semester {{ item.course.semester }}{% endif %}</p></div><span class="map-coverage">{{ item.assessed }}/{{ item.topics|length }} assessed</span></div>
+        {% if item.topics %}
+          {% for unit in item.course.units %}
+          <div class="unit-label">{{ unit.title }}</div>
+          {% for topic in unit.topics %}
+          {% set mastery = topic.mastery_records|selectattr('user_id', 'equalto', current_user.id)|first %}
+          <div class="map-topic"><span class="mastery-dot {{ 'dot-assessed' if mastery else 'dot-unassessed' }}"></span><a href="{{ url_for('main.topic_quiz', topic_id=topic.id) }}">{{ topic.title }}</a><span class="weight-pill">{{ topic.weightage|round(1) }}×</span>
+            {% if mastery %}<strong class="map-score">{{ (mastery.score * 100)|round|int }}%</strong><div class="mini-track"><i style="width: {{ (mastery.score * 100)|round|int }}%"></i></div><small>{{ "Confident" if mastery.attempts >= 3 else "Early estimate" }} · {{ mastery.attempts }} attempt{{ "" if mastery.attempts == 1 else "s" }}</small>
+            {% else %}<span class="not-assessed">Not assessed</span>{% endif %}
+          </div>
+          {% endfor %}{% endfor %}
+        {% else %}<p class="muted-copy">No units yet. Add units and topics to see your map.</p>{% endif %}
+        {% if item.course.exam_date %}<a class="inline-action" href="{{ url_for('main.exam_plan', course_id=item.course.id) }}">View exam plan · {{ item.course.exam_date.strftime("%b %d") }} →</a>{% else %}<a class="inline-action" href="{{ url_for('main.exam_plan', course_id=item.course.id) }}">Set exam date &amp; plan →</a>{% endif %}
+      </article>{% endfor %}
+    </section>
+    <aside class="panel next-panel"><p class="eyebrow eyebrow-dark">HIGH-VALUE NEXT STEPS</p><h2>Topics to assess</h2>
+      {% set has_unassessed = namespace(value=false) %}
+      {% for item in course_topics %}{% for topic in item.next_topics %}{% set has_unassessed.value = true %}<a class="next-topic" href="{{ url_for('main.topic_quiz', topic_id=topic.id) }}"><span><small>{{ item.course.name }}</small><strong>{{ topic.title }}</strong></span><b>→</b></a>{% endfor %}{% endfor %}
+      {% if not has_unassessed.value %}<p class="muted-copy">Every topic has at least one recorded assessment. Review a low score or add more syllabus topics.</p>{% endif %}
+      <div class="mastery-rule"><b>How mastery works</b><p>Recent quiz accuracy updates the estimate with an exponentially weighted average (α = 0.35). Fewer than three attempts are marked as an early estimate, not a confident measurement.</p></div>
+      <div class="integrity-card"><span>✳</span><p>Study time is effort—not a measure of intelligence or ability.</p></div>
+    </aside>
+  </div>
+  {% endif %}
+</main>
+{% endblock %}

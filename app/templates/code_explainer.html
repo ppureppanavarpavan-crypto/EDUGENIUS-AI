@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Code explainer · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page narrow-page">
+  <section class="page-heading"><div><p class="eyebrow eyebrow-dark">STATIC ANALYSIS · {{ mode }} MODE</p><h1>Understand code, don’t just run it.</h1><p>Paste a short snippet and optional sample input. The server treats your code as text and never executes it.</p></div></section>
+  <section class="panel">
+    <form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Code<textarea name="code" rows="13" maxlength="4000" required placeholder="Paste C, C++, Java, Python, or another short snippet here.">{{ code }}</textarea></label>
+      <label>Sample input <span class="optional">(optional)</span><textarea name="sample_input" rows="2" maxlength="1000" placeholder="A small input to reason about">{{ sample_input }}</textarea></label>
+      <button class="button button-lime" type="submit">Explain this code <span aria-hidden="true">→</span></button>
+    </form>
+  </section>
+  {% if explanation %}<section class="panel explanation-panel" aria-live="polite"><p class="eyebrow eyebrow-dark">ANALYSIS · {{ mode }} MODE</p><pre>{{ explanation }}</pre>{% if mode == "DEMO" %}<p class="field-help">No code analysis was generated. Configure an AI provider to enable this feature.</p>{% else %}<p class="field-help">AI-generated static reasoning only. The code was not executed; verify all conclusions.</p>{% endif %}</section>{% endif %}
+</main>
+{% endblock %}

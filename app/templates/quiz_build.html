@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Practice {{ topic.title }} · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page narrow-page">
+  <div class="breadcrumbs"><a href="{{ url_for('main.course_detail', course_id=topic.unit.course_id) }}">{{ topic.unit.course.name }}</a><span>/</span><span>{{ topic.title }}</span></div>
+  <section class="page-heading"><div><p class="eyebrow eyebrow-dark">TOPIC PRACTICE · {{ topic.weightage|round(1) }}× WEIGHT</p><h1>{{ topic.title }}</h1><p>Create a multiple-choice check for this topic. Your score updates its mastery estimate after you submit.</p></div></section>
+  {% if mastery %}<section class="mastery-summary"><strong>{{ (mastery.score * 100)|round|int }}%</strong><span>Current estimate · {{ mastery.attempts }} attempt{{ "" if mastery.attempts == 1 else "s" }} · {{ "Confident" if mastery.attempts >= 3 else "Early estimate" }}</span></section>{% else %}<section class="mastery-summary mastery-empty"><strong>—</strong><span>Not assessed yet. Your first attempt creates an estimate.</span></section>{% endif %}
+  {% if prerequisites %}<section class="suggestion-card"><b>Prerequisite detective</b><p>This topic score suggests you may want to revisit: {% for item in prerequisites %}<strong>{{ item.title }}</strong>{% if not loop.last %}, {% endif %}{% endfor %}. Check your course material to confirm the foundation.</p></section>{% endif %}
+  <section class="panel quiz-builder"><p class="eyebrow eyebrow-dark">BUILD A QUICK CHECK</p><h2>Add questions for your own syllabus</h2><p class="muted-copy">Answers stay private until you submit. Do not use this for graded or high-stakes assessments.</p>
+    <form method="post" id="quiz-builder-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><div id="question-list">
+      <fieldset class="question-editor"><legend>Question <span class="question-number">1</span></legend><label>Question prompt<textarea name="prompt[]" rows="2" maxlength="600" required placeholder="Write a question about {{ topic.title }}"></textarea></label><div class="options-grid">{% for letter in ["A", "B", "C", "D"] %}<label>Option {{ letter }}<input name="option_{{ letter|lower }}[]" maxlength="300" required></label>{% endfor %}</div><label>Correct option<select name="correct[]" required><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select></label></fieldset>
+    </div><div class="builder-actions"><button class="button button-outline" type="button" id="add-question">+ Add a question</button><button class="button button-lime" type="submit">Create quiz &amp; start <span aria-hidden="true">→</span></button></div></form>
+  </section>
+</main>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/quiz-builder.js') }}" defer></script>{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Study tools · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page">
+  <section class="page-heading"><div><p class="eyebrow eyebrow-dark">YOUR STUDY WORKSPACE</p><h1>Tools for the work between classes.</h1><p>Capture what you learn, schedule what’s due, and check your recorded progress.</p></div></section>
+  <section class="tool-grid">
+    <a class="panel tool-link" href="{{ url_for('main.notes') }}"><span class="tool-icon">✎</span><p class="eyebrow eyebrow-dark">CAPTURE</p><h2>Study notes</h2><p>Write and organize notes, optionally linking them to syllabus topics.</p><span class="text-action">Open notes →</span></a>
+    <a class="panel tool-link" href="{{ url_for('main.flashcards') }}"><span class="tool-icon">▤</span><p class="eyebrow eyebrow-dark">RECALL</p><h2>Flashcards</h2><p>Review topic cards and grow intervals when recall feels confident.</p><span class="text-action">Open flashcards →</span></a>
+    <a class="panel tool-link" href="{{ url_for('main.tasks') }}"><span class="tool-icon">☑</span><p class="eyebrow eyebrow-dark">ORGANIZE</p><h2>Study tasks</h2><p>Track assignments and study work by course, due date, and estimated time.</p><span class="text-action">Open tasks →</span></a>
+    <a class="panel tool-link" href="{{ url_for('main.analytics') }}"><span class="tool-icon">⌁</span><p class="eyebrow eyebrow-dark">REFLECT</p><h2>Learning activity</h2><p>Review recorded assessments and topic coverage without invented progress.</p><span class="text-action">View activity →</span></a>
+  </section>
+</main>
+{% endblock %}

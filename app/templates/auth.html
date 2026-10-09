@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ "Create account" if mode == "register" else "Sign in" }} · EduGenius AI{% endblock %}
+{% block content %}
+<main class="auth-page">
+  <section class="auth-card">
+    <p class="eyebrow eyebrow-dark">{{ "YOUR SEMESTER, CLEARER" if mode == "register" else "WELCOME BACK" }}</p>
+    <h1>{{ "Create your study space." if mode == "register" else "Pick up where you left off." }}</h1>
+    <p class="auth-intro">Your syllabus and study history are private to your account.</p>
+    <form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if mode == "register" %}<label>Full name<input name="name" type="text" maxlength="100" autocomplete="name" required value="{{ request.form.get('name', '') }}"></label>{% endif %}
+      <label>College email<input name="email" type="email" maxlength="254" autocomplete="email" required value="{{ request.form.get('email', '') }}"></label>
+      {% if mode == "register" %}<label>Branch or program <span class="optional">(optional)</span><input name="academic_level" type="text" maxlength="80" placeholder="e.g. Computer Science, ECE"></label>{% endif %}
+      <label>Password<input name="password" type="password" minlength="{{ 10 if mode == 'register' else 1 }}" autocomplete="{{ 'new-password' if mode == 'register' else 'current-password' }}" required>{% if mode == "register" %}<span class="field-help">At least 10 characters.</span>{% endif %}</label>
+      {% if mode == "login" %}<label class="check-row"><input type="checkbox" name="remember"> Keep me signed in</label>{% endif %}
+      <button class="button button-lime button-submit" type="submit">{{ "Create account" if mode == "register" else "Sign in" }} <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="auth-switch">{{ "Already have an account?" if mode == "register" else "New to EduGenius AI?" }} <a href="{{ url_for('auth.login' if mode == 'register' else 'auth.register') }}">{{ "Sign in" if mode == "register" else "Create an account" }}</a></p>
+  </section>
+  <aside class="auth-aside"><div class="aside-mark">E</div><p class="eyebrow">A NOTE ON ACADEMIC INTEGRITY</p><h2>Build understanding<br>you can explain.</h2><p>This study workspace is designed to help you find gaps and practice—not to replace your course materials or do graded work for you.</p></aside>
+</main>
+{% endblock %}

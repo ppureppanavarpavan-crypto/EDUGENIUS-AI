@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Learning activity · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page">
+  <div class="breadcrumbs"><a href="{{ url_for('main.study_tools') }}">Study tools</a><span>/</span><span>Learning activity</span></div>
+  <section class="page-heading"><div><p class="eyebrow eyebrow-dark">EVIDENCE, NOT GUESSES</p><h1>Your learning activity.</h1><p>These summaries use only topics and attempts you have actually recorded.</p></div></section>
+  <section class="stats-grid"><article class="panel stat-card"><small>SYLLABUS TOPICS</small><strong>{{ topic_count }}</strong><span>across {{ courses|length }} courses</span></article><article class="panel stat-card"><small>ASSESSED TOPICS</small><strong>{{ assessed_count }}</strong><span>{{ topic_count - assessed_count }} remain unassessed</span></article><article class="panel stat-card"><small>AVERAGE RECORDED MASTERY</small><strong>{{ average_mastery|string + "%" if average_mastery is not none else "—" }}</strong><span>{{ "from recorded attempts" if average_mastery is not none else "No assessments recorded yet" }}</span></article></section>
+  <section class="panel analytics-panel"><div class="panel-heading"><div><p class="eyebrow eyebrow-dark">RECENT EVENTS</p><h2>Your last 20 recorded assessments</h2></div></div>
+    {% if events %}<div class="record-list">{% for event in events %}<article class="event-row"><span class="event-score">{{ (event.result * 100)|round|int }}%</span><div><strong>{{ event.topic.title }}</strong><small>{{ event.event_type|title }} · {{ event.created_at.strftime("%b %d, %Y at %H:%M") }}</small></div></article>{% endfor %}</div>{% else %}<p class="muted-copy">Complete a topic quiz to start building an activity history.</p>{% endif %}
+  </section>
+</main>
+{% endblock %}

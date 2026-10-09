@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Flashcards · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page">
+  <div class="breadcrumbs"><a href="{{ url_for('main.study_tools') }}">Study tools</a><span>/</span><span>Flashcards</span></div>
+  <section class="page-heading"><div><p class="eyebrow eyebrow-dark">RETRIEVAL PRACTICE</p><h1>Make recall count.</h1><p>Rate how well you recalled the answer. Low-confidence recall resets the interval; stronger recall spaces the next review further apart.</p></div></section>
+  <div class="manage-grid">
+    <section class="panel"><p class="eyebrow eyebrow-dark">CREATE A CARD</p><h2>Attach it to a topic</h2>
+      {% if topics %}<form method="post" class="form-stack"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label>Topic<select name="topic_id" required><option value="">Choose a topic</option>{% for topic in topics %}<option value="{{ topic.id }}">{{ topic.unit.course.name }} · {{ topic.title }}</option>{% endfor %}</select></label><label>Question<textarea name="question" rows="3" maxlength="2000" required></textarea></label><label>Answer<textarea name="answer" rows="4" maxlength="5000" required></textarea></label><button class="button button-lime" type="submit">Add flashcard <span aria-hidden="true">→</span></button></form>{% else %}<p class="muted-copy">Add a course and at least one topic before creating flashcards.</p>{% endif %}
+    </section>
+    <section class="panel"><div class="panel-heading"><div><p class="eyebrow eyebrow-dark">REVIEW QUEUE</p><h2>{{ cards|length }} card{{ "" if cards|length == 1 else "s" }}</h2></div></div>
+      {% if cards %}<div class="record-list">{% for card in cards %}<article class="record-card"><div class="record-heading"><div><small>{{ card.topic.title }}</small><strong>{{ card.question }}</strong></div><span class="count-pill">{{ "Due" if card.id in due_card_ids else "Scheduled" }}</span></div><details class="answer-reveal"><summary>Reveal answer</summary><p>{{ card.answer }}</p></details><p class="field-help">Next review: {{ card.next_review_at.strftime("%b %d, %Y") }} · current interval {{ card.review_interval }} day{{ "" if card.review_interval == 1 else "s" }}</p>{% if card.id in due_card_ids %}<form method="post" action="{{ url_for('main.review_flashcard', card_id=card.id) }}" class="rating-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><span>Recall quality (0 = forgot, 5 = easy)</span>{% for quality in range(6) %}<button type="submit" name="quality" value="{{ quality }}" aria-label="Recall quality {{ quality }}">{{ quality }}</button>{% endfor %}</form>{% else %}<p class="field-help">Come back when this card is due to record another review.</p>{% endif %}</article>{% endfor %}</div>{% else %}<p class="muted-copy">No flashcards yet. Add a card to start a review queue.</p>{% endif %}
+    </section>
+  </div>
+</main>
+{% endblock %}

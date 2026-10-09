@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Hint ladder tutor · EduGenius AI{% endblock %}
+{% block content %}
+<main class="app-page narrow-page">
+  <section class="page-heading"><div><p class="eyebrow eyebrow-dark">ANTI-COPY TUTOR · {{ mode }} MODE</p><h1>Work it out, one hint at a time.</h1><p>Start with the concept, then choose when to ask for the next rung. A full solution is logged on your learning record.</p></div></section>
+  <section class="panel tutor-panel">
+    <form method="post" class="form-stack">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if hint_session %}<input type="hidden" name="hint_session_id" value="{{ hint_session.id }}">{% endif %}
+      <label>Connect this problem to a syllabus topic <span class="optional">(optional)</span>
+        <select name="topic_id"><option value="">No topic link</option>{% for topic in topics|default([]) %}<option value="{{ topic.id }}" {% if selected_topic and selected_topic.id == topic.id %}selected{% endif %}>{{ topic.unit.course.name }} · {{ topic.title }}</option>{% endfor %}</select>
+      </label>
+      <label>Your problem or question<textarea name="problem" rows="5" maxlength="3000" required placeholder="Paste a practice problem or describe the concept you are working on.">{{ problem }}</textarea></label>
+      {% if output %}
+      <section class="hint-response" aria-live="polite"><div class="response-heading"><span>RUNG {{ rung }} OF 5</span><span class="demo-badge">{{ mode }} MODE</span></div><pre>{{ output }}</pre></section>
+      {% endif %}
+      {% if not hint_session or rung == 0 %}
+      <button class="button button-lime" type="submit" name="rung" value="1">Start with a concept hint <span aria-hidden="true">→</span></button>
+      {% elif rung < 5 %}
+      <button class="button button-lime" type="submit" name="rung" value="{{ rung + 1 }}">Ask for rung {{ rung + 1 }}: {{ labels[rung + 1] }} <span aria-hidden="true">→</span></button>
+      {% else %}
+      <p class="field-help">Full solution viewed and logged. Start a new problem when you’re ready.</p>
+      <button class="button button-outline" type="submit" name="new_problem" value="1">Start a new hint session</button>
+      {% endif %}
+    </form>
+  </section>
+  <section class="panel ladder-guide"><p class="eyebrow eyebrow-dark">THE HINT LADDER</p><ol>{% for number, guidance in ladder.items() %}<li class="{{ 'ladder-current' if number == rung else '' }}"><span>{{ number }}</span><p>{{ guidance }}</p>{% if number == 5 %}<small>Solution viewed is recorded.</small>{% endif %}</li>{% endfor %}</ol></section>
+  <p class="integrity-note"><span>✳</span> AI-generated guidance may be incorrect. Check your course material; do not submit generated work as your own.</p>
+</main>
+{% endblock %}
